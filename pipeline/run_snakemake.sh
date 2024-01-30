@@ -1,6 +1,7 @@
 cmd="snakemake"
 cmd="$cmd -p"
-cmd="$cmd -c1"
+cmd="$cmd -c4"
+cmd="$cmd --jobs 30"
 # cmd="$cmd --dry-run"
 
 echo $cmd
