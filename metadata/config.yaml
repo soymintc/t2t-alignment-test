@@ -1,1 +1,9 @@
 root_dir: /fscratch/chois7/T2T/alignment
+
+fasta:
+    T2T: /fscratch/chois7/reference/genome/T2T/chm13v2.0.fa
+    GRCh38: /fscratch/chois7/reference/genome/GRCh38.d1.vd1/GRCh38.d1.vd1.fa
+
+gtf:
+    T2T: /fscratch/chois7/reference/genome/T2T/chm13v2.0_RefSeq_Liftoff_v5.1.gtf
+    GRCh38: /fscratch/chois7/reference/genome/GRCh38.d1.vd1/gencode.v36.annotation.gtf
