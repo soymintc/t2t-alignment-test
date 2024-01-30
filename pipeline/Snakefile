@@ -1,0 +1,50 @@
+
+configfile: "../metadata/config.yaml"
+root_dir = config['root_dir']
+
+SAMPLES = ['HCM-BROD-0476-C56-10A', 'HCM-BROD-0476-C56-85M']
+
+rule all:
+    input:
+        expand(os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq.gz'), sample=SAMPLES),
+        expand(os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R2.fastq.gz'), sample=SAMPLES),
+
+rule sort_bam_by_readname:
+    input:
+        bam = os.path.join(root_dir, 'data/bam/{sample}/{sample}.bam'),
+    output:
+        bam = os.path.join(root_dir, 'data/bam/{sample}/{sample}.sort_n.bam'),
+    params:
+        compression_level = 9, # 0 uncompressed, 9 best
+    log:
+        os.path.join(root_dir, 'data/bam/{sample}/{sample}.sort_n.bam.log'),
+    shell:
+        "samtools sort -n {input.bam} -o {output.bam} -l {params.compression_level} &> {log}"
+
+rule fastq_to_bam:
+    input:
+        bam = os.path.join(root_dir, 'data/bam/{sample}/{sample}.sort_n.bam'),
+    output:
+        fq1 = temp(os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq')),
+        fq2 = temp(os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R2.fastq')),
+    log:
+        os.path.join(root_dir, 'data/fastq/{sample}/{sample}.bamtofastq.log'),
+    shell:
+        'bedtools bamtofastq -i {input.bam} -fq {output.fq1} -fq2 {output.fq2} &> {log}'
+
+rule gzip_fastq:
+    input:
+        fq1 = temp(os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq')),
+        fq2 = temp(os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R2.fastq')),
+    output:
+        fq1 = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq.gz'),
+        fq2 = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R2.fastq.gz'),
+    log:
+        os.path.join(root_dir, 'data/fastq/{sample}/{sample}.gzip.log'),
+    shell:
+        'gzip -c {input.fq1} > {output.fq1} &> {log} && '
+        'gzip -c {input.fq2} > {output.fq2} &>> {log}'
+
+
+    
+

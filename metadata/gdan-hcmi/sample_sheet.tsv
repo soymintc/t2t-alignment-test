@@ -1,0 +1,50 @@
+File ID	File Name	Data Category	Data Type	Project ID	Case ID	Sample ID	Sample Type
+1377476f-ddc8-4feb-bd60-fca8b2878de7	259f7add-fc86-4033-b97d-6f2760e31be2_wgs_gdc_realn.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0516-C56	HCM-CSHL-0516-C56-85B	Next Generation Cancer Model
+dbd0061b-a3a2-4405-9eda-3839783ee8af	e3f4a90d-1ddd-4896-b095-1c31f74b0d99_wgs_gdc_realn.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0516-C56	HCM-CSHL-0516-C56-10A	Blood Derived Normal
+f82023ec-f589-4ba6-87e5-c0f2609210a5	8925e33c-e965-4dfa-821a-15c37536bdda_wgs_gdc_realn.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-WCMC-0673-C56	HCM-WCMC-0673-C56-10A	Blood Derived Normal
+ab7acac2-4c1d-41aa-9b0c-32165d38fef9	a7f0139a-d936-4ac7-9e90-ed7e1c1ae371_wgs_gdc_realn.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-WCMC-0673-C56	HCM-WCMC-0673-C56-85A	Next Generation Cancer Model
+30da902a-b9af-42a1-828d-f76a093b4c96	0b9bdbb4-92d2-4d19-86c0-0e2e9fe89599_wgs_gdc_realn.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-WCMC-0673-C56	HCM-WCMC-0673-C56-01A	Slides
+a0194388-ecf8-479e-b260-2997408fec4c	482eacb1-1085-421f-9083-26be159ce028_wgs_gdc_realn.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-WCMC-0673-C56	HCM-WCMC-0673-C56-05A	Slides
+aafc46bd-abdf-4d44-8fab-934658184a3d	c9f4d37b-4819-4427-97db-934eef3b01d0_wgs_gdc_realn.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-WCMC-0673-C56	HCM-WCMC-0673-C56-85B	Next Generation Cancer Model
+38bb5866-5519-4eb0-8c92-482a49ae6b22	HCM-CSHL-0467-C56-06A-11D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0467-C56	HCM-CSHL-0467-C56-06A	Metastatic
+54eb1b43-1b6a-4d55-8be8-d222109b529f	045eee43-bf64-444c-b194-08244cd821f6_wgs_gdc_realn.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-BROD-0476-C56	HCM-BROD-0476-C56-10A	Blood Derived Normal
+4d4c7000-e776-4b41-a3bb-3013b8267fca	fd2b6be2-08ff-45d5-b372-7d4eec5855ab_wgs_gdc_realn.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-BROD-0476-C56	HCM-BROD-0476-C56-85M	Next Generation Cancer Model
+2fc00e50-0fda-45c2-96a2-d413d0f788ee	HCM-BROD-0650-C56-12A-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-BROD-0650-C56	HCM-BROD-0650-C56-12A	Saliva
+d465823d-d437-408b-870a-a2ed5932bb43	HCM-CSHL-0467-C56-10A-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0467-C56	HCM-CSHL-0467-C56-10A	Blood Derived Normal
+98903d5f-7e5d-4acf-9b4a-7aa730241bdf	HCM-CSHL-0467-C56-85M-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0467-C56	HCM-CSHL-0467-C56-85M	Next Generation Cancer Model
+9b3bd4ee-5da0-4998-8548-ad25266fb5f0	HCM-BROD-0650-C56-06A-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-BROD-0650-C56	HCM-BROD-0650-C56-06A	Human Tumor Original Cells
+9110e5f3-8889-4e3d-8e49-e9c0983c3c31	HCM-BROD-0650-C56-85N-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-BROD-0650-C56	HCM-BROD-0650-C56-85N	Next Generation Cancer Model
+1c647a1f-4502-4df0-81bc-2eb7d1aa16ed	HCM-CSHL-0639-C56-11A-11D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0639-C56	HCM-CSHL-0639-C56-11A	Solid Tissue Normal
+74ffe4ce-d5f1-4c4d-b66a-a4101bd13419	HCM-CSHL-0639-C56-85A-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0639-C56	HCM-CSHL-0639-C56-85A	Next Generation Cancer Model
+d4166aaf-c40e-46a7-810f-840b787bce1b	HCM-WCMC-1074-C56-85A-01D-A88H-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-WCMC-1074-C56	HCM-WCMC-1074-C56-85A	Next Generation Cancer Model
+4b134059-4d49-4ef3-a809-fdf12d048177	HCM-BROD-0958-C56-85B-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-BROD-0958-C56	HCM-BROD-0958-C56-85B	Next Generation Cancer Model
+400e4195-87f2-495c-a012-76a7dcda7dc5	HCM-BROD-1117-C56-85A-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-BROD-1117-C56	HCM-BROD-1117-C56-85A	Next Generation Cancer Model
+336b6ad9-71c9-4394-83a0-b59afcc3d015	HCM-CSHL-0853-C56-85F-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0853-C56	HCM-CSHL-0853-C56-85F	Next Generation Cancer Model
+7b9ac983-5a36-4ad1-84a4-a1400a07db6e	HCM-CSHL-0853-C56-85D-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0853-C56	HCM-CSHL-0853-C56-85D	Next Generation Cancer Model
+7ca64334-e441-4199-80f2-411e21e8fe4c	HCM-CSHL-0853-C56-07A-11D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0853-C56	HCM-CSHL-0853-C56-07A	Additional Metastatic
+ffdf182d-c4a9-415f-97b6-4060eb2266fe	HCM-WCMC-1074-C56-10A-01D-A88H-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-WCMC-1074-C56	HCM-WCMC-1074-C56-10A	Blood Derived Normal
+4d95c5d3-1923-4929-b92e-1647c84aecb0	HCM-WCMC-1074-C56-01A-01D-A88H-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-WCMC-1074-C56	HCM-WCMC-1074-C56-01A	FFPE Scrolls
+8b6686eb-d152-49e6-974a-b4c0fc65c658	HCM-BROD-0958-C56-10A-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-BROD-0958-C56	HCM-BROD-0958-C56-10A	Blood Derived Normal
+48a76bb0-3e73-4e68-9f61-492094403f2b	HCM-CSHL-0868-C56-06A-11D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0868-C56	HCM-CSHL-0868-C56-06A	Metastatic
+275c4858-9ba2-4bc2-9219-77d9157a5d8f	HCM-CSHL-0868-C56-85A-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0868-C56	HCM-CSHL-0868-C56-85A	Next Generation Cancer Model
+e7412eb5-8b06-4e8b-ab21-72ada9370974	HCM-CSHL-0853-C56-07B-11D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0853-C56	HCM-CSHL-0853-C56-07B	Additional Metastatic
+f23b691a-0cb8-4770-a08c-3725b2137bf8	HCM-CSHL-0853-C56-85B-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0853-C56	HCM-CSHL-0853-C56-85B	Next Generation Cancer Model
+aa7cf18c-f87c-4e82-b2ae-0f4f800641e8	HCM-CSHL-0853-C56-10A-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0853-C56	HCM-CSHL-0853-C56-10A	Blood Derived Normal
+e1ea8163-dfe4-4018-8653-42d20322768b	HCM-BROD-1129-C56-10A-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-BROD-1129-C56	HCM-BROD-1129-C56-10A	Blood Derived Normal
+3aa61deb-0541-49bd-be14-e58aad6dc874	HCM-BROD-1129-C56-85B-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-BROD-1129-C56	HCM-BROD-1129-C56-85B	Next Generation Cancer Model
+9e852f68-07c8-44f8-b535-3621bf14f0f5	HCM-CSHL-0765-C56-10A-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0765-C56	HCM-CSHL-0765-C56-10A	Blood Derived Normal
+c3dc4afa-5e99-4e12-8ca7-57eab51b5604	HCM-CSHL-0801-C56-10A-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0801-C56	HCM-CSHL-0801-C56-10A	Blood Derived Normal
+478bbbac-d5fc-411b-bc48-52c9d34b8870	HCM-CSHL-0699-C56-85B-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0699-C56	HCM-CSHL-0699-C56-85B	Next Generation Cancer Model
+27cbe992-4ffa-4037-98df-e9c98ac483d1	HCM-CSHL-0868-C56-10A-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0868-C56	HCM-CSHL-0868-C56-10A	Blood Derived Normal
+43b22403-ecfa-4758-942d-e6f65b6432e0	HCM-CSHL-0853-C56-85G-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0853-C56	HCM-CSHL-0853-C56-85G	Next Generation Cancer Model
+05400ad1-1ff9-4b49-ab62-dc58f8f31fd6	HCM-CSHL-0768-C56-85N-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0768-C56	HCM-CSHL-0768-C56-85N	Next Generation Cancer Model
+cf96da58-882c-48f6-a93b-abe5078d3c47	HCM-CSHL-0768-C56-85B-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0768-C56	HCM-CSHL-0768-C56-85B	Next Generation Cancer Model
+6d6946e8-5f84-48bd-a0d8-52e5fc4acf28	HCM-CSHL-0801-C56-85B-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0801-C56	HCM-CSHL-0801-C56-85B	Next Generation Cancer Model
+03d5d157-34e2-49b5-8b75-3ab86bdad711	HCM-CSHL-0818-C56-85P-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0818-C56	HCM-CSHL-0818-C56-85P	Next Generation Cancer Model
+c6d708fa-aa4f-43c6-9615-8f8de1fcb612	HCM-CSHL-0853-C56-06A-11D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0853-C56	HCM-CSHL-0853-C56-06A	Metastatic
+3b2ad3b1-3b9e-4064-bb8c-d239ee48b952	HCM-CSHL-0818-C56-06A-11D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0818-C56	HCM-CSHL-0818-C56-06A	Metastatic
+8297eb91-5d80-4f45-898b-ffe553ded091	HCM-CSHL-0818-C56-10A-01D-A881-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0818-C56	HCM-CSHL-0818-C56-10A	Blood Derived Normal
+9de78904-090a-490b-9b5a-033a460d9b6f	HCM-CSHL-0765-C56-85P-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0765-C56	HCM-CSHL-0765-C56-85P	Next Generation Cancer Model
+72fd56b0-0564-4648-85f7-34f4fc92ddee	HCM-CSHL-0768-C56-85O-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0768-C56	HCM-CSHL-0768-C56-85O	Next Generation Cancer Model
+26d7fe5d-9937-4098-b854-7025cbe4bba4	HCM-CSHL-0768-C56-10A-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0768-C56	HCM-CSHL-0768-C56-10A	Blood Derived Normal
+4bf3703f-de00-4d08-bd62-ceae6dd7522b	HCM-CSHL-0699-C56-10A-01D-A88G-36.WholeGenome.RP-1765.bam	Sequencing Reads	Aligned Reads	HCMI-CMDC	HCM-CSHL-0699-C56	HCM-CSHL-0699-C56-10A	Blood Derived Normal
