@@ -6,8 +6,7 @@ SAMPLES = ['HCM-BROD-0476-C56-10A', 'HCM-BROD-0476-C56-85M']
 
 rule all:
     input:
-        expand(os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq.gz'), sample=SAMPLES),
-        expand(os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R2.fastq.gz'), sample=SAMPLES),
+        expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina.bam'), sample=SAMPLES),
 
 rule sort_bam_by_readname:
     input:
@@ -16,10 +15,11 @@ rule sort_bam_by_readname:
         bam = os.path.join(root_dir, 'data/bam/{sample}/{sample}.sort_n.bam'),
     params:
         compression_level = 9, # 0 uncompressed, 9 best
+    threads: 8,
     log:
         os.path.join(root_dir, 'data/bam/{sample}/{sample}.sort_n.bam.log'),
     shell:
-        "samtools sort -n {input.bam} -o {output.bam} -l {params.compression_level} &> {log}"
+        "sambamba sort -N {input.bam} -o {output.bam} -l {params.compression_level} -p -t {threads} &> {log}"
 
 rule fastq_to_bam:
     input:
@@ -34,17 +34,23 @@ rule fastq_to_bam:
 
 rule gzip_fastq:
     input:
-        fq1 = temp(os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq')),
-        fq2 = temp(os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R2.fastq')),
+        fq = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R{i}.fastq'),
     output:
+        fq = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R{i}.fastq.gz'),
+    shell:
+        'gzip -c {input.fq} > {output.fq}'
+
+rule bwa_mem:
+    input:
         fq1 = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq.gz'),
         fq2 = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R2.fastq.gz'),
+    output:
+        bam = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina.bam'),
     log:
-        os.path.join(root_dir, 'data/fastq/{sample}/{sample}.gzip.log'),
+        os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina.bam.log'),
+    threads: 12,
+    params:
+        ref = config['fasta']['GRCh38'],
     shell:
-        'gzip -c {input.fq1} > {output.fq1} &> {log} && '
-        'gzip -c {input.fq2} > {output.fq2} &>> {log}'
-
-
-    
-
+        'bwa mem -M -t {threads} {params.ref} {input.fq1} {input.fq2} 2> {log} | '
+        'samtools view -bSh - -o {output.bam} 2>> {log}'
