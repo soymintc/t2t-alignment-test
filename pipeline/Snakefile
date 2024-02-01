@@ -3,10 +3,16 @@ configfile: "../metadata/config.yaml"
 root_dir = config['root_dir']
 
 SAMPLES = ['HCM-BROD-0476-C56-10A', 'HCM-BROD-0476-C56-85M']
+#GENOMES = ['GRCh38', 'T2T']
+GENOMES = ['GRCh38']
+
+wildcard_constraints:
+    genome = 'GRCh38|T2T',
 
 rule all:
     input:
-        expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina.bam'), sample=SAMPLES),
+        #expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.bam'), sample=SAMPLES, genome=GENOMES,),
+        expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.sorted.bam'), sample=SAMPLES, genome=GENOMES,),
 
 rule sort_bam_by_readname:
     input:
@@ -45,12 +51,26 @@ rule bwa_mem:
         fq1 = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq.gz'),
         fq2 = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R2.fastq.gz'),
     output:
-        bam = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina.bam'),
+        bam = temp(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.bam')),
     log:
-        os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina.bam.log'),
+        os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.bam.log'),
     threads: 12,
     params:
-        ref = config['fasta']['GRCh38'],
+        ref = lambda w: config['fasta'][w.genome],
     shell:
         'bwa mem -M -t {threads} {params.ref} {input.fq1} {input.fq2} 2> {log} | '
         'samtools view -bSh - -o {output.bam} 2>> {log}'
+
+rule sort_bam: # TODO: join sort right after bwa to save junk space
+    input:
+        bam = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.bam'),
+    output:
+        bam = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.sorted.bam'),
+    log:
+        os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.sorted.bam.log'),
+    threads: 4,
+    params:
+        ref = lambda w: config['fasta'][w.genome],
+        compression_level = 9, # 0 uncompressed, 9 best
+    shell:
+        'sambamba sort {input.bam} -t {threads} -l {params.compression_level} -p -o {output.bam} &> {log}'
