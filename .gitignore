@@ -2,4 +2,5 @@
 results/
 data/
 *.log
+.swp
 *-token*.txt

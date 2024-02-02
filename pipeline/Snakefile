@@ -13,7 +13,7 @@ wildcard_constraints:
 rule all:
     input:
         #expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.bam'), sample=SAMPLES, genome=GENOMES,),
-        expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.sorted.bam'), sample=ILLUMINA_SAMPLES, genome=GENOMES,),
+        #expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.sorted.bam'), sample=ILLUMINA_SAMPLES, genome=GENOMES,),
         expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.sorted.bam'), sample=ONT_SAMPLES, genome=GENOMES,),
 
 rule sort_bam_by_readname:
@@ -72,11 +72,11 @@ rule minimap2:
         bam = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.sorted.bam'),
     log:
         os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.bam.log'),
-    threads: 16,
+    threads: 8,
     params:
         ref = lambda w: config['fasta'][w.genome] + '.mmi', # ONT ref
         compression_level = 9, # 0 uncompressed, 9 best
-        minimap2 = '/fscratch/chois7/packages/minimap2',
+        minimap2 = '/fscratch/chois7/packages/minimap2/minimap2',
     shell:
         '{params.minimap2} -ax map-ont -t {threads} {params.ref} {input.fq} 2> {log} | '
         'samtools view -bh -O BAM -@ - 2>> {log} | '
