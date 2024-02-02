@@ -2,9 +2,10 @@
 configfile: "../metadata/config.yaml"
 root_dir = config['root_dir']
 
-SAMPLES = ['HCM-BROD-0476-C56-10A', 'HCM-BROD-0476-C56-85M']
-#GENOMES = ['GRCh38', 'T2T']
-GENOMES = ['GRCh38']
+ILLUMINA_SAMPLES = ['HCM-BROD-0476-C56-10A', 'HCM-BROD-0476-C56-85M']
+ONT_SAMPLES = ['AK-RT-004-T', 'AK-RT-004-N']
+GENOMES = ['GRCh38', 'T2T']
+#GENOMES = ['GRCh38']
 
 wildcard_constraints:
     genome = 'GRCh38|T2T',
@@ -12,7 +13,8 @@ wildcard_constraints:
 rule all:
     input:
         #expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.bam'), sample=SAMPLES, genome=GENOMES,),
-        expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.sorted.bam'), sample=SAMPLES, genome=GENOMES,),
+        expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.sorted.bam'), sample=ILLUMINA_SAMPLES, genome=GENOMES,),
+        expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.sorted.bam'), sample=ONT_SAMPLES, genome=GENOMES,),
 
 rule sort_bam_by_readname:
     input:
@@ -51,26 +53,31 @@ rule bwa_mem:
         fq1 = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq.gz'),
         fq2 = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R2.fastq.gz'),
     output:
-        bam = temp(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.bam')),
-    log:
-        os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.bam.log'),
-    threads: 12,
-    params:
-        ref = lambda w: config['fasta'][w.genome],
-    shell:
-        'bwa mem -M -t {threads} {params.ref} {input.fq1} {input.fq2} 2> {log} | '
-        'samtools view -bSh - -o {output.bam} 2>> {log}'
-
-rule sort_bam: # TODO: join sort right after bwa to save junk space
-    input:
-        bam = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.bam'),
-    output:
         bam = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.sorted.bam'),
     log:
-        os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.sorted.bam.log'),
-    threads: 4,
+        os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.bam.log'),
+    threads: 8,
     params:
         ref = lambda w: config['fasta'][w.genome],
         compression_level = 9, # 0 uncompressed, 9 best
     shell:
-        'sambamba sort {input.bam} -t {threads} -l {params.compression_level} -p -o {output.bam} &> {log}'
+        'bwa mem -M -t {threads} {params.ref} {input.fq1} {input.fq2} 2> {log} | '
+        'samtools view -bSh -O BAM - 2>> {log} | '
+        'samtools sort -@ {threads} - 2>> {log} > {output.bam}'
+
+rule minimap2:
+    input:
+        fq = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq.gz'),
+    output:
+        bam = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.sorted.bam'),
+    log:
+        os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.bam.log'),
+    threads: 16,
+    params:
+        ref = lambda w: config['fasta'][w.genome] + '.mmi', # ONT ref
+        compression_level = 9, # 0 uncompressed, 9 best
+        minimap2 = '/fscratch/chois7/packages/minimap2',
+    shell:
+        '{params.minimap2} -ax map-ont -t {threads} {params.ref} {input.fq} 2> {log} | '
+        'samtools view -bh -O BAM -@ - 2>> {log} | '
+        'samtools sort -@ {threads} - 2>> {log} > {output.bam}'
