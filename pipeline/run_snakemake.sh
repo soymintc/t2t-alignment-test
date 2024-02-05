@@ -1,7 +1,7 @@
 cmd="snakemake"
 cmd="$cmd -p"
-cmd="$cmd -c32"
-cmd="$cmd --jobs 30"
+cmd="$cmd -c60"
+cmd="$cmd --jobs 60"
 # cmd="$cmd --dry-run"
 # cmd="$cmd --allowed-rules bwa_mem"
 
