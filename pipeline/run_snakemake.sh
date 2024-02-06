@@ -5,7 +5,7 @@ cmd="$cmd --jobs 60"
 cmd="$cmd --use-singularity"
 cmd="$cmd --singularity-args \"--bind /rtsess01 --bind /home\""
 # cmd="$cmd --dry-run"
-# cmd="$cmd --allowed-rules bwa_mem"
+# cmd="$cmd --allowed-rules conform_savana_svs"
 
 echo $cmd
 eval $cmd

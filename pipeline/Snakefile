@@ -22,10 +22,11 @@ rule all:
         #expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.sorted.bam'), sample=ILLUMINA_SAMPLES, genome=GENOMES,),
         #expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.sorted.bam'), sample=ONT_SAMPLES, genome=GENOMES,),
         #expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.sorted.bam.bai'), sample=ONT_SAMPLES, genome=GENOMES,),
-        expand(os.path.join(root_dir, 'results/multiqc/{sample}/mosdepth/{sample}.{mode}_{genome}.mosdepth.global.dist.txt'), sample=ONT_SAMPLES, genome=GENOMES, mode=['ont']),
-        expand(os.path.join(root_dir, 'results/multiqc/{sample}/mosdepth/{sample}.{mode}_{genome}.mosdepth.global.dist.txt'), sample=ILLUMINA_SAMPLES, genome=GENOMES, mode=['illumina']),
-        expand(os.path.join(root_dir, 'results/multiqc/{sample}/multiqc_report.html'), sample=ONT_SAMPLES),
-        expand(os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/variant.stats'), tumor=ONT_TUMORS, genome=GENOMES),
+        #expand(os.path.join(root_dir, 'results/multiqc/{sample}/mosdepth/{sample}.{mode}_{genome}.mosdepth.global.dist.txt'), sample=ONT_SAMPLES, genome=GENOMES, mode=['ont']),
+        #expand(os.path.join(root_dir, 'results/multiqc/{sample}/mosdepth/{sample}.{mode}_{genome}.mosdepth.global.dist.txt'), sample=ILLUMINA_SAMPLES, genome=GENOMES, mode=['illumina']),
+        #expand(os.path.join(root_dir, 'results/multiqc/{sample}/multiqc_report.html'), sample=ONT_SAMPLES),
+        expand(os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/{tumor}.ont_{genome}.somatic.sv_breakpoints.lenient.vcf'), tumor=ONT_TUMORS, genome=GENOMES),
+        expand(os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/{tumor}.svs.tsv'), tumor=ONT_TUMORS, genome=GENOMES),
 
 rule sort_bam_by_readname:
     input:
@@ -181,16 +182,39 @@ rule savana:
         normal_bam = _get_normal_bam,
         normal_bai = _get_normal_bai,
     output:
-        stats = os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/variant.stats'),
+        vcf = os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/{tumor}.ont_{genome}.somatic.sv_breakpoints.lenient.vcf'),
     log:
         os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/savana.log'),
     params:
+        min_length = 30,
         outdir = os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}'),
+        contigs_file = os.path.join(root_dir, 'metadata/human_contigs.txt'),
         ref = lambda w: config['fasta'][w.genome],
         fai = lambda w: config['fasta'][w.genome] + '.fai',
     threads: 12
     shell:
-        'savana --tumour {input.tumor_bam} --normal {input.normal_bam} '
+        #'[[ -d {params.outdir} ]] && {{ rm -r {params.outdir}; }} && '
+        'savana -t {input.tumor_bam} -n {input.normal_bam} '
         '--ref {params.ref} --ref_index {params.fai} '
         '--outdir {params.outdir} '
-        '--threads {threads} --mapq 0 &> {log}'
+        '--contigs {params.contigs_file} '
+        '--length {params.min_length} '
+        '--sample {wildcards.tumor}.ont_{wildcards.genome} '
+        '--threads {threads} --mapq 0'
+
+#def _get_savana_lenient_vcf(wildcards):
+#    vcfs = os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/*.somatic.sv_breakpoints.lenient.vcf'),
+#    assert len(vcfs) == 1, vcfs
+#    vcf = vcfs[0]
+#    return vcf
+
+rule conform_savana_svs:
+    input:
+        vcf = os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/{tumor}.ont_{genome}.somatic.sv_breakpoints.lenient.vcf'),
+    output:
+        tsv = os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/{tumor}.svs.tsv'),
+    shell:
+        """
+        python ../scripts/conform_savana_svs.py -i {input.vcf} -o {output.tsv}
+        """
+
