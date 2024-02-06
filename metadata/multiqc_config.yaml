@@ -1,0 +1,20 @@
+mosdepth_config:
+  include_contigs:
+    - "chr*"
+  exclude_contigs:
+    - "*_alt"
+    - "*_decoy"
+    - "*_random"
+    - "*V*"
+    - "chrUn*"
+    - "HLA*"
+    - "chrM"
+    - "chrEBV"
+  general_stats_coverage:
+    - 10
+    - 20
+    - 30
+    - 40
+    - 200
+  general_stats_coverage_hidden:
+    - 200

@@ -2,10 +2,16 @@
 configfile: "../metadata/config.yaml"
 root_dir = config['root_dir']
 
+
 ILLUMINA_SAMPLES = ['HCM-BROD-0476-C56-10A', 'HCM-BROD-0476-C56-85M']
 ONT_SAMPLES = ['AK-RT-004-T', 'AK-RT-004-N']
 GENOMES = ['GRCh38', 'T2T']
+MODES = ['illumina', 'ont']
 #GENOMES = ['GRCh38']
+
+pair = config['pair']
+ONT_TUMORS = [s for s in list(pair.keys()) if s in ONT_SAMPLES]
+ILLUMINA_TUMORS = [s for s in list(pair.keys()) if s in ILLUMINA_SAMPLES]
 
 wildcard_constraints:
     genome = 'GRCh38|T2T',
@@ -14,13 +20,18 @@ rule all:
     input:
         #expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.bam'), sample=SAMPLES, genome=GENOMES,),
         #expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.illumina_{genome}.sorted.bam'), sample=ILLUMINA_SAMPLES, genome=GENOMES,),
-        expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.sorted.bam'), sample=ONT_SAMPLES, genome=GENOMES,),
+        #expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.sorted.bam'), sample=ONT_SAMPLES, genome=GENOMES,),
+        #expand(os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.sorted.bam.bai'), sample=ONT_SAMPLES, genome=GENOMES,),
+        expand(os.path.join(root_dir, 'results/multiqc/{sample}/mosdepth/{sample}.{mode}_{genome}.mosdepth.global.dist.txt'), sample=ONT_SAMPLES, genome=GENOMES, mode=['ont']),
+        expand(os.path.join(root_dir, 'results/multiqc/{sample}/mosdepth/{sample}.{mode}_{genome}.mosdepth.global.dist.txt'), sample=ILLUMINA_SAMPLES, genome=GENOMES, mode=['illumina']),
+        expand(os.path.join(root_dir, 'results/multiqc/{sample}/multiqc_report.html'), sample=ONT_SAMPLES),
+        expand(os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/variant.stats'), tumor=ONT_TUMORS, genome=GENOMES),
 
 rule sort_bam_by_readname:
     input:
         bam = os.path.join(root_dir, 'data/bam/{sample}/{sample}.bam'),
     output:
-        bam = os.path.join(root_dir, 'data/bam/{sample}/{sample}.sort_n.bam'),
+        bam = temp(os.path.join(root_dir, 'data/bam/{sample}/{sample}.sort_n.bam')),
     params:
         compression_level = 9, # 0 uncompressed, 9 best
     threads: 8,
@@ -76,8 +87,110 @@ rule minimap2:
     params:
         ref = lambda w: config['fasta'][w.genome] + '.mmi', # ONT ref
         compression_level = 9, # 0 uncompressed, 9 best
-        minimap2 = '/fscratch/chois7/packages/minimap2/minimap2',
+        minimap2 = '/rtsess01/compute/juno/shah/users/chois7/packages/minimap2/minimap2',
     shell:
         '{params.minimap2} -ax map-ont -t {threads} {params.ref} {input.fq} 2> {log} | '
         'samtools view -bh -O BAM -@ - 2>> {log} | '
         'samtools sort -@ {threads} - 2>> {log} > {output.bam}'
+
+rule samtools_index_ont:
+    input:
+        bam = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.sorted.bam'),
+    output:
+        bai = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.ont_{genome}.sorted.bam.bai'),
+    shell:
+        'samtools index {input.bam}'
+
+rule mosdepth:
+    input:
+        bam = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.{mode}_{genome}.sorted.bam'),
+        bai = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.{mode}_{genome}.sorted.bam.bai'),
+    params:
+        prefix = os.path.join(root_dir, 'results/multiqc/{sample}/mosdepth/{sample}.{mode}_{genome}'),
+    output:
+        summary = os.path.join(root_dir, 'results/multiqc/{sample}/mosdepth/{sample}.{mode}_{genome}.mosdepth.summary.txt'),
+        dist = os.path.join(root_dir, 'results/multiqc/{sample}/mosdepth/{sample}.{mode}_{genome}.mosdepth.global.dist.txt'),
+    log:
+        os.path.join(root_dir, 'results/multiqc/{sample}/mosdepth/{sample}.{mode}_{genome}.mosdepth.log'),
+    singularity: "docker://quay.io/biocontainers/mosdepth:0.3.1--ha7ba039_0"
+    resources: mem_mb=1024*12
+    shell:
+        'mosdepth -n --fast-mode {params.prefix} {input.bam} &> {log}'
+
+#rule bamqc:
+#    input:
+#        bam = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.{mode}_{genome}.sorted.bam'),
+#        bai = os.path.join(root_dir, 'data/output_bam/{sample}/{sample}.{mode}_{genome}.sorted.bam.bai'),
+#    params:
+#        outdir = os.path.join(root_dir, 'results/multiqc/{sample}/qualimap/{sample}.{mode}_{genome}'),
+#        gtf = lambda w: config['gtf'][w.genome],
+#    output:
+#        bamqc = os.path.join(root_dir, 'results/multiqc/{sample}/qualimap/{sample}.{mode}_{genome}/qualimapReport.html'),
+#    log:
+#        os.path.join(root_dir, 'results/multiqc/{sample}/qualimap/{sample}.{mode}_{genome}.qualimap.log'),
+#    singularity: "docker://pegi3s/qualimap:latest",
+#    resources: mem_mb=1024*4
+#    shell:
+#        'qualimap bamqc --java-mem-size=4G -bam {input.bam} -outdir {params.outdir} -gff {params.gtf} &> {log}'
+    
+
+rule multiqc_ont:
+    input:
+        mosdepth = expand(os.path.join(root_dir, 'results/multiqc/{{sample}}/mosdepth/{{sample}}.{mode}_{genome}.mosdepth.summary.txt'), genome=GENOMES, mode=['ont']),
+#        bamqc = expand(os.path.join(root_dir, 'results/multiqc/{{sample}}/qualimap/{{sample}}.{mode}_{genome}/qualimapReport.html'), genome=GENOMES, mode=['ont']),
+    output:
+        report = os.path.join(root_dir, 'results/multiqc/{sample}/multiqc_report.html'),
+    params:
+        input_dir = os.path.join(root_dir, 'results/multiqc/{sample}'),
+        output_dir = os.path.join(root_dir, 'results/multiqc/{sample}'),
+        config = os.path.join(root_dir, 'metadata/multiqc_config.yaml'),
+    shell: 
+        'multiqc -c {params.config} -o {params.output_dir} {params.input_dir}'
+
+rule multiqc_illumina:
+    input:
+        mosdepth = expand(os.path.join(root_dir, 'results/multiqc/{{sample}}/mosdepth/{{sample}}.{mode}_{genome}.mosdepth.summary.txt'), genome=GENOMES, mode=['illumina']),
+#        bamqc = expand(os.path.join(root_dir, 'results/multiqc/{{sample}}/qualimap/{{sample}}.{mode}_{genome}/qualimapReport.html'), genome=GENOMES, mode=['illumina']),
+    output:
+        report = os.path.join(root_dir, 'results/multiqc/{sample}/multiqc_report.html'),
+    params:
+        input_dir = os.path.join(root_dir, 'results/multiqc/{sample}'),
+        output_dir = os.path.join(root_dir, 'results/multiqc/{sample}'),
+        config = os.path.join(root_dir, 'metadata/multiqc_config.yaml'),
+    shell: 
+        'multiqc -c {params.config} -o {params.output_dir} {params.input_dir}'
+
+def _get_normal_bam(wildcards, pair=pair):
+    tumor = wildcards.tumor
+    genome = wildcards.genome
+    normal = pair[tumor]
+    normal_bam = os.path.join(root_dir, f'data/output_bam/{normal}/{normal}.ont_{genome}.sorted.bam'),
+    return normal_bam
+
+def _get_normal_bai(wildcards, pair=pair):
+    tumor = wildcards.tumor
+    genome = wildcards.genome
+    normal = pair[tumor]
+    normal_bai = os.path.join(root_dir, f'data/output_bam/{normal}/{normal}.ont_{genome}.sorted.bam.bai'),
+    return normal_bai
+
+rule savana:
+    input: 
+        tumor_bam = os.path.join(root_dir, 'data/output_bam/{tumor}/{tumor}.ont_{genome}.sorted.bam'),
+        tumor_bai = os.path.join(root_dir, 'data/output_bam/{tumor}/{tumor}.ont_{genome}.sorted.bam.bai'),
+        normal_bam = _get_normal_bam,
+        normal_bai = _get_normal_bai,
+    output:
+        stats = os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/variant.stats'),
+    log:
+        os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}/savana.log'),
+    params:
+        outdir = os.path.join(root_dir, 'results/savana/{tumor}.ont_{genome}'),
+        ref = lambda w: config['fasta'][w.genome],
+        fai = lambda w: config['fasta'][w.genome] + '.fai',
+    threads: 12
+    shell:
+        'savana --tumour {input.tumor_bam} --normal {input.normal_bam} '
+        '--ref {params.ref} --ref_index {params.fai} '
+        '--outdir {params.outdir} '
+        '--threads {threads} --mapq 0 &> {log}'
