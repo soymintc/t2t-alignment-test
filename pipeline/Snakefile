@@ -1,12 +1,16 @@
+import pandas as pd
 
 configfile: "../metadata/config.yaml"
 root_dir = config['root_dir']
 
 
 ILLUMINA_SAMPLES = ['HCM-BROD-0476-C56-10A', 'HCM-BROD-0476-C56-85M']
-ONT_SAMPLES = ['AK-RT-004-T', 'AK-RT-004-N']
-GENOMES = ['GRCh38', 'T2T']
-MODES = ['illumina', 'ont']
+#ONT_SAMPLES = ['AK-RT-004-T', 'AK-RT-004-N']
+ONT_SAMPLES = ['SPECTRUM-OV-044-T', 'SPECTRUM-OV-044-N']
+#GENOMES = ['GRCh38', 'T2T']
+GENOMES = ['GRCh37']
+#MODES = ['illumina', 'ont']
+MODES = ['ont']
 #GENOMES = ['GRCh38']
 
 pair = config['pair']
@@ -14,7 +18,7 @@ ONT_TUMORS = [s for s in list(pair.keys()) if s in ONT_SAMPLES]
 ILLUMINA_TUMORS = [s for s in list(pair.keys()) if s in ILLUMINA_SAMPLES]
 
 wildcard_constraints:
-    genome = 'GRCh38|T2T',
+    genome = 'GRCh38|T2T|GRCh37',
 
 rule all:
     input:
@@ -77,6 +81,37 @@ rule bwa_mem:
         'samtools view -bSh -O BAM - 2>> {log} | '
         'samtools sort -@ {threads} - 2>> {log} > {output.bam}'
 
+def _get_ont_fastq(wildcards):
+    sample = wildcards.sample
+    fastq_list_file = f'../metadata/{sample}_R1.fastq.list.txt'
+    assert os.path.exists(fastq_list_file), fastq_list_file
+    fastq_list = [s.strip() for s in open(fastq_list_file)]
+    return fastq_list
+
+def _get_ont_path(wildcards):
+    sample = wildcards.sample
+    df_path = f'../metadata/fastq_paths.csv'
+    df = pd.read_csv(df_path)
+    assert sample in df['sample'].tolist(), f'\n{df}'
+    path = df[df['sample']==sample]['path'].squeeze()
+    return path
+
+rule merge_fastq:
+    input:
+        fq = _get_ont_fastq,
+    output:
+        fq = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq.gz'),
+    log:
+        os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq.gz.log'),
+    params:
+        path = lambda w: _get_ont_path(w),
+        destination_path = os.path.join(root_dir, 'data/fastq/{sample}'),
+        merged_fq = os.path.join(root_dir, 'data/fastq/{sample}/merged/{sample}_R1_001.fastq.gz'),
+    shell:
+        'mkdir -p {params.destination_path} && '
+        'merge_isabl_fastq.py --sample_id {wildcards.sample} --path {params.path} --destination_path {params.destination_path} && '
+        'ln -s {params.merged_fq} {output.fq}'
+
 rule minimap2:
     input:
         fq = os.path.join(root_dir, 'data/fastq/{sample}/{sample}_R1.fastq.gz'),
@@ -92,7 +127,7 @@ rule minimap2:
     shell:
         '{params.minimap2} -ax map-ont -t {threads} {params.ref} {input.fq} 2> {log} | '
         'samtools view -bh -O BAM -@ - 2>> {log} | '
-        'samtools sort -@ {threads} - 2>> {log} > {output.bam}'
+        'samtools sort -@ {threads} -o {output.bam} 2>> {log}'
 
 rule samtools_index_ont:
     input:

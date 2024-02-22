@@ -1,13 +1,15 @@
-root_dir: /rtsess01/compute/juno/shah/users/chois7/projects/T2T/alignment
+root_dir: /fscratch/chois7/ont-alignment
 
 fasta:
     T2T: /rtsess01/compute/juno/shah/users/chois7/reference/genome/T2T/chm13v2.0.fa
     GRCh38: /rtsess01/compute/juno/shah/users/chois7/reference/genome/GRCh38.d1.vd1/GRCh38.d1.vd1.fa
+    GRCh37: /fscratch/chois7/reference/genome/GRCh37-lite/GRCh37-lite.fa 
 
 gtf:
     T2T: /rtsess01/compute/juno/shah/users/chois7/reference/genome/T2T/chm13v2.0_RefSeq_Liftoff_v5.1.gtf
     GRCh38: /rtsess01/compute/juno/shah/users/chois7/reference/genome/GRCh38.d1.vd1/gencode.v36.annotation.gtf
 
 pair:
+    SPECTRUM-OV-044-T: SPECTRUM-OV-044-N
     AK-RT-004-T: AK-RT-004-N
     HCM-BROD-0476-C56-85M: HCM-BROD-0476-C56-10A
